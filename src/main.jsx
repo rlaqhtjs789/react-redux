@@ -1,21 +1,22 @@
-import React, { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import { createStore } from '@reduxjs/toolkit'
-import rootReducer from './reducers/index.js'
-import { Provider } from 'react-redux'
+import React, { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.jsx";
+import { applyMiddleware, createStore } from "@reduxjs/toolkit";
+import rootReducer from "./reducers/index.js";
+import { Provider } from "react-redux";
+import { loggerMIddleware } from "./middleware/index.js";
 
-const root = createRoot(document.getElementById('root'));
-const store = createStore(rootReducer);
+const root = createRoot(document.getElementById("root"));
+
+const middleware = applyMiddleware(loggerMIddleware);
+
+const store = createStore(rootReducer, middleware);
 
 root.render(
   <StrictMode>
     <Provider store={store}>
-      <App
-        // onIncrement={() => store.dispatch({ type: "INCREMENT" })}
-        // onDecrement={() => store.dispatch({ type: "DECREMENT" })}
-      />
+      <App />
     </Provider>
   </StrictMode>
 );
