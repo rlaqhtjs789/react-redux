@@ -1,10 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 import ChildComponentA from "./ChildComponentA.jsx";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 function App() {
   const dispatch = useDispatch();
+
+  const effectRan = useRef(false);
+  const posts = useSelector((state) => state.posts);
+  async function fetchPosts() {
+    const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
+    dispatch({ type: "FETCH_POST", payload: response.data });
+  }
+  useEffect(() => {
+    // StrictMode는 개발 환경에서 컴포넌트를 두 번 렌더링하여 잠재적 문제를 찾습니다.
+    // 이 useRef 로직은 API가 한 번만 호출되도록 보장합니다.
+    if (effectRan.current === false) {
+      fetchPosts();
+
+      // cleanup 함수: 컴포넌트가 언마운트될 때 실행됩니다.
+      return () => (effectRan.current = true);
+    }
+  });
 
   const [todoValue, setTodoValue] = useState("");
   const todos = useSelector((state) => state.todos);
@@ -25,6 +43,15 @@ function App() {
 
   return (
     <div className="App">
+      {/* Posts Redux */}
+      <div className="post-reducer-preview">
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>{post.title}</li>
+          ))}
+        </ul>
+      </div>
+
       {/* TODO Redux */}
       <div className="todo-reducer-preview">
         <ul>
