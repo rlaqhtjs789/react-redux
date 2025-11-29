@@ -6,10 +6,11 @@ import { applyMiddleware, createStore } from "@reduxjs/toolkit";
 import rootReducer from "./reducers/index.js";
 import { Provider } from "react-redux";
 import { loggerMIddleware } from "./middleware/index.js";
+import { thunk } from "redux-thunk";
 
 const root = createRoot(document.getElementById("root"));
 
-const middleware = applyMiddleware(loggerMIddleware);
+const middleware = applyMiddleware(thunk, loggerMIddleware);
 
 const store = createStore(rootReducer, middleware);
 
